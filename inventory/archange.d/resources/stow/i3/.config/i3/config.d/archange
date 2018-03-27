@@ -1,0 +1,2 @@
+
+bindsym $mod+F5 exec rofi -show Remote -modi Remote:~/.config/rofi_ansible_connect/rofi_ansible_connect

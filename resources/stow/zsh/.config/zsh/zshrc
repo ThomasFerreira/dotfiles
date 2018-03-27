@@ -1,0 +1,24 @@
+# -*- mode: shell-script; -*- #
+
+ZSHCACHE=${HOME}/.cache/zsh
+mkdir -p "${ZSHCACHE}"
+
+HISTFILE=${ZSHCACHE}/history
+HISTSIZE=4096
+SAVEHIST=2048
+
+typeset -U path
+path=(~/bin ~/.local/bin $path[@])
+
+setopt append_history
+setopt auto_cd
+setopt correct_all
+setopt extended_glob
+setopt no_match
+setopt notify
+setopt print_exit_value
+
+autoload -U compinit && compinit -d "${ZSHCACHE}/compdump"
+autoload -U select-word-style && select-word-style bash
+
+zstyle ':completion:*:processes' command 'ps xfo pid,cmd'

@@ -1,0 +1,49 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure TinyProxy is installed.
+      pacman:
+        name: tinyproxy
+        state: present
+
+    - name: Ensure target directories exists.
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/crappy_proxy/bin/genconf.sh.d
+        - /etc/crappy_proxy/conf
+
+    - name: Deploy base conf file.
+      copy:
+        src: files/base.conf
+        dest: /etc/crappy_proxy/conf/
+        mode: 0644
+
+    - name: Deploy custom conf scripts.
+      copy:
+        src: "{{ item }}"
+        dest: /etc/crappy_proxy/bin/genconf.sh.d
+        mode: 0744
+      with_items: "{{ role_vars.conf_scripts }}"
+
+    - name: Deploy conf generator script.
+      copy:
+        src: files/genconf.sh
+        dest: /etc/crappy_proxy/bin/
+        mode: 0744
+
+    - name: Deploy systemd unit file.
+      copy:
+        src: files/crappy_proxy.service
+        dest: /etc/systemd/system/
+        mode: 0644
+
+    - name: Enable crappy_proxy service.
+      systemd:
+        name: crappy_proxy
+        daemon_reload: yes
+        enabled: yes

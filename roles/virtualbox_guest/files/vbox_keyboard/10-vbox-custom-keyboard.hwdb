@@ -1,0 +1,4 @@
+evdev:atkbd:dmi:bvn*:bvr*:bd*:svninnotekGmbH:pnVirtualBox:pvr*
+ KEYBOARD_KEY_DB=compose
+ KEYBOARD_KEY_64=leftmeta
+ KEYBOARD_KEY_65=rightmeta

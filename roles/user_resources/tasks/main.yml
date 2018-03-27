@@ -1,0 +1,43 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure all needed directories exists.
+      file:
+        path: "{{ item.0.path }}/{{ item.1.path }}"
+        owner: "{{ item.1.owner | d(item.0.owner) | d(omit) }}"
+        group: "{{ item.1.group | d(item.0.group) | d(omit) }}"
+        mode: "{{ item.1.mode | d(omit) }}"
+        state: directory
+      with_subelements:
+        - "{{ role_vars }}"
+        - "directories"
+        - skip_missing: yes
+      loop_control:
+        label: "{{ item.0.path }}/{{ item.1.path }}"
+
+    - name: Copy all needed files.
+      copy:
+        dest: "{{ item.0.path }}/{{ item.1.path | d('') }}"
+        src: "{{ item.1.src }}"
+        owner: "{{ item.1.owner | d(item.0.owner) | d(omit) }}"
+        group: "{{ item.1.group | d(item.0.group) | d(omit) }}"
+        mode: "{{ item.1.mode | d(omit) }}"
+        directory_mode: "{{ item.1.directory_mode | d(omit) }}"
+      with_subelements:
+        - "{{ role_vars }}"
+        - "files"
+        - skip_missing: yes
+      loop_control:
+        label: "{{ item.0.path }}/{{ item.1.path | d('') }}"
+
+
+- name: Include tasks for git repositories.
+  include_tasks: git_repositories.yml
+  when: role_vars | selectattr('git_repositories', 'defined') | list | length > 0
+
+- name: Include tasks for stow.
+  include_tasks: stow.yml
+  when: role_vars | selectattr('stow', 'defined') | list | length > 0

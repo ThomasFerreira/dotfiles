@@ -1,0 +1,7 @@
+# -*- mode: gitconfig; -*- #
+
+[includeIf "gitdir:~/projects/"]
+    path = ~/.config/git/config-awl
+
+[includeIf "gitdir:~/projects/personal/"]
+    path = ~/.config/git/config-personal

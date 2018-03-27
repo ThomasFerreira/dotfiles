@@ -1,0 +1,63 @@
+rofi.auto-select: false
+rofi.bw: 1
+rofi.case-sensitive: false
+rofi.click-to-exit: true
+rofi.color-active: BASE_COLOR_GREY_00, BASE_COLOR_GREEN_05, BASE_COLOR_BLACK, BASE_COLOR_GREY_01, BASE_COLOR_GREEN_05
+rofi.color-normal: BASE_COLOR_GREY_00, BASE_COLOR_GREY_05, BASE_COLOR_BLACK, BASE_COLOR_GREY_01, BASE_COLOR_GREY_05
+rofi.color-urgent: BASE_COLOR_GREY_00, BASE_COLOR_RED_05, BASE_COLOR_BLACK, BASE_COLOR_GREY_01, BASE_COLOR_RED_05
+rofi.color-window: BASE_COLOR_GREY_00, BASE_COLOR_GREY_01, BASE_COLOR_GREY_00
+rofi.columns: 1
+rofi.combi-hide-mode-prefix: yes
+rofi.combi-modi: window,drun
+rofi.cycle: true
+rofi.disable-history: false
+rofi.dpi: -1
+rofi.drun-match-fields: name,generic,exec,categories
+rofi.eh: 1
+rofi.fixed-num-lines: true
+rofi.font: BASE_FONT_NAME BASE_FONT_SIZE
+rofi.fullscreen: false
+rofi.levenshtein-sort: true
+rofi.lines: 20
+rofi.location: 0
+rofi.matching: glob
+rofi.max-history-size: 5
+rofi.modi: combi
+rofi.padding: 4
+rofi.parse-hosts: false
+rofi.parse-known-hosts: true
+rofi.pid: /run/user/1000/rofi.pid
+rofi.run-command: {cmd}
+rofi.run-shell-command: {terminal} -e {cmd}
+rofi.scroll-method: 1
+rofi.show-icons: true
+rofi.show-match: true
+rofi.sidebar-mode: false
+rofi.sort: true
+rofi.ssh-client: ssh
+rofi.ssh-command: {terminal} -e {ssh-client} {host}
+rofi.terminal: rofi-sensible-terminal
+rofi.threads: 0
+rofi.tokenize: true
+rofi.width: 80
+rofi.window-command: xkill -id {window}
+rofi.window-match-fields: all
+rofi.xoffset: 0
+rofi.yoffset: 0
+
+rofi.display-drun: App
+rofi.display-run: Run
+rofi.display-ssh: Remote
+rofi.display-window: Win
+rofi.display-combi: ?
+! rofi.display-keys:
+! rofi.display-windowcd:
+
+! "Command to get extra run targets"
+! rofi.run-list-command:
+! "Theme to use to look for icons"
+! rofi.drun-icon-theme:
+! "Background to use for fake transparency. (background or screenshot)"
+! rofi.fake-background: screenshot
+! "New style theme file"
+! rofi.theme:

@@ -1,0 +1,42 @@
+---
+
+- become_user: "{{ system_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure sudo is installed.
+      pacman:
+        name: sudo
+        state: present
+
+    - name: Generate env_keep configuration.
+      template:
+        dest: /etc/sudoers.d/env_keep
+        src: templates/env_keep.j2
+        validate: 'visudo -cf %s'
+        mode: 0440
+      when: role_vars.env_keep is defined
+      vars:
+        items: "{{ role_vars.env_keep }}"
+
+    - name: Generate groups configuration.
+      template:
+        dest: /etc/sudoers.d/groups
+        src: templates/groups_users.j2
+        validate: 'visudo -cf %s'
+        mode: 0440
+      when: role_vars.groups is defined
+      vars:
+        items: "{{ role_vars.groups }}"
+        items_type: group
+
+    - name: Generate users configuration.
+      template:
+        dest: /etc/sudoers.d/users
+        src: templates/groups_users.j2
+        validate: 'visudo -cf %s'
+        mode: 0440
+      when: role_vars.users is defined
+      vars:
+        items: "{{ role_vars.users }}"
+        items_type: user

@@ -1,0 +1,35 @@
+---
+
+ansible_user: "{{ vault_username }}"
+system_superuser: "{{ vault_username }}"
+
+user:
+  name: "{{ vault_username }}"
+  home: /home/{{ vault_username }}
+
+enabled_roles:
+  user_resources:
+    - path: "{{ user.home }}"
+      owner: "{{ user.name }}"
+
+      directories:
+        - path: .cache
+          mode: "0700"
+        - path: .config
+          mode: "0755"
+        - path: .local
+          mode: "0700"
+        - path: .terminfo/r
+          mode: "0700"
+
+      files:
+        - src: "{{ playbook_dir }}/resources/stow/zsh/"
+          directory_mode: "0755"
+        - src: "{{ inventory_file }}.d/resources/files/tmux/"
+          directory_mode: "0755"
+        - path: .terminfo/r
+          src: "/usr/share/terminfo/r/rxvt-unicode"
+          mode: "0400"
+        - path: .terminfo/r
+          src: "/usr/share/terminfo/r/rxvt-unicode-256color"
+          mode: "0400"

@@ -1,0 +1,11 @@
+XDG_CONFIG_HOME         DEFAULT=@{HOME}/.config
+
+ICEAUTHORITY            DEFAULT=${XDG_RUNTIME_DIR}/ICEauthority
+SSH_AUTH_SOCK           DEFAULT=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
+
+http_proxy              DEFAULT=127.0.0.1:3128
+HTTP_PROXY              DEFAULT=127.0.0.1:3128
+https_proxy             DEFAULT=127.0.0.1:3128
+HTTPS_PROXY             DEFAULT=127.0.0.1:3128
+
+ZDOTDIR                 DEFAULT=${XDG_CONFIG_HOME}/zsh

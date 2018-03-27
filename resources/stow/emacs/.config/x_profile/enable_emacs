@@ -1,0 +1,5 @@
+# -*- mode: shell-script; -*- #
+
+if [ ! -e ~/.config/systemd/user/default.target.wants/emacs.service ]; then
+    systemctl --user enable --now emacs.service >/dev/null 2>&1
+fi

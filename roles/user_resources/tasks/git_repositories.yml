@@ -1,0 +1,62 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure destination exists.
+      file:
+        path: "{{ item.0.path }}/{{ item.1.path }}"
+        owner: "{{ item.1.owner | d(item.0.owner) }}"
+        group: "{{ item.1.group | d(item.0.group) }}"
+        state: directory
+      with_subelements:
+        - "{{ role_vars }}"
+        - "git_repositories"
+        - skip_missing: yes
+      loop_control:
+        label: "{{ item.0.path }}/{{ item.1.path }}"
+
+- name: Clone needed repositories.
+  git:
+    repo: "{{ item.1.base_url }}"
+    dest: "{{ item.0.path }}/{{ item.1.path }}"
+    accept_hostkey: yes
+    bare: no
+    clone: yes
+    force: no
+    recursive: yes
+    update: no
+  become_user: "{{ item.1.owner | d(item.0.owner) }}"
+  become: yes
+  with_subelements:
+    - "{{ role_vars }}"
+    - "git_repositories"
+    - skip_missing: yes
+  loop_control:
+    label: "{{ item.1.base_url }}"
+
+- name: Ensure push url is properly setup.
+  shell: |-
+    REPOSITORY_PATH="{{ item.0.path }}/{{ item.1.path }}"
+    TARGET_PUSH_URL="{{ item.1.push_url }}"
+    CURRENT_PUSH_URL=$(git -C "${REPOSITORY_PATH}" remote get-url --push origin)
+
+    if [ $? -eq 0 ] && [ "${TARGET_PUSH_URL}" != "${CURRENT_PUSH_URL}" ]; then
+      git -C "${REPOSITORY_PATH}" remote set-url --push origin "${TARGET_PUSH_URL}" >/dev/null
+      exit $?
+    else
+      exit 1
+    fi
+  register: _result
+  changed_when: _result.rc == 0
+  failed_when: false
+  when: item.1.push_url is defined
+  become_user: "{{ item.1.owner | d(item.0.owner) }}"
+  become: yes
+  with_subelements:
+    - "{{ role_vars }}"
+    - "git_repositories"
+    - skip_missing: yes
+  loop_control:
+    label: "{{ item.0.path }}/{{ item.1.path }}"

@@ -1,0 +1,9 @@
+---
+
+GPG_TRUST:
+  EXPIRED: 1
+  UNDEFINED: 2
+  NEVER: 3
+  MARGINAL: 4
+  FULL: 5
+  ULTIMATE: 6

@@ -1,0 +1,28 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure dhcpcd is installed.
+      pacman:
+        name: dhcpcd
+        state: present
+
+    - name: Gather Facts
+      setup:
+        gather_timeout: 15
+
+    - name: Configure arp probing.
+      lineinfile:
+        path: /etc/dhcpcd.conf
+        state: "{{ role_vars.noarp | d(True) | ternary('present', 'absent') }}"
+        line: noarp
+
+    - name: Enable service on required interfaces.
+      systemd:
+        name: dhcpcd@{{ item }}
+        enabled: "{{ item in role_vars.interfaces }}"
+        daemon_reload: yes
+      when: hostvars[inventory_hostname]['ansible_' + item]['type'] == 'ether'
+      with_items: "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"

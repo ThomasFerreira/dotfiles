@@ -1,0 +1,8 @@
+# -*- mode: shell-script; -*- #
+
+if [ -d ${HOME}/.config/i3/config.d ]; then
+    rm -f ${HOME}/.config/i3/config \
+	&& find ${HOME}/.config/i3/config.d -mindepth 1 -maxdepth 1 -name '*' \
+		-exec cat {} + 2>/dev/null > ${HOME}/.config/i3/config \
+	&& chmod a-w ${HOME}/.config/i3/config
+fi

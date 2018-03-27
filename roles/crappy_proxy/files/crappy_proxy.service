@@ -1,0 +1,13 @@
+[Unit]
+Description=My local proxy
+After=network.target
+
+[Service]
+Type=forking
+ExecStartPre=/etc/crappy_proxy/bin/genconf.sh /run/crappy_proxy/tinyproxy.conf
+ExecStart=/usr/bin/tinyproxy -c /run/crappy_proxy/tinyproxy.conf
+PIDFile=/run/crappy_proxy/tinyproxy.pid
+PrivateDevices=yes
+
+[Install]
+WantedBy=multi-user.target

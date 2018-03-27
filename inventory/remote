@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; -*-
+
+import argparse
+import json
+import pathlib
+
+from ansible.parsing.dataloader import DataLoader
+from ansible.inventory.manager import InventoryManager
+
+
+empty_inventory = {"_meta": { "hostvars": {} }}
+
+inventory_glob = 'remote.d/inventory_sources/*'
+
+def _parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--list', dest='full', action='store_true')
+    parser.add_argument('--host', dest='host', action='store')
+    return parser.parse_args()
+
+if __name__ == '__main__':
+    arguments = _parse_args()
+
+    final_inventory = {}
+
+    if (arguments.full):
+        script_path = pathlib.Path(__file__)
+        script_dir = pathlib.Path(script_path.parent)
+
+        inventory_sources = [x for x in script_dir.glob(inventory_glob) if x.is_file()]
+
+        ansible_inventory = InventoryManager(loader=DataLoader(),
+                                             sources=[str(x) for x in inventory_sources])
+
+        final_inventory = {**ansible_inventory.get_groups_dict(), **empty_inventory}
+
+    elif (arguments.host):
+        final_inventory = {}
+
+    print(json.dumps(final_inventory))

@@ -1,0 +1,44 @@
+---
+
+- become_user: "{{ system_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure lightdm is installed.
+      pacman:
+        name: lightdm
+        state: present
+
+    - name: Ensure lightdm.conf.d directory exists.
+      file:
+        path: /etc/lightdm/lightdm.conf.d
+        mode: 0755
+        state: directory
+
+    - when: role_vars.autologin is defined
+      block:
+
+        - name: Ensure autologin group exists.
+          group:
+            name: autologin
+            system: yes
+            state: present
+
+        - name: Add user to autologin group.
+          user:
+            name: "{{ role_vars.autologin.user }}"
+            append: yes
+            groups: autologin
+            createhome: no
+
+        - name: Deploy autologin.conf
+          template:
+            dest: /etc/lightdm/lightdm.conf.d/autologin.conf
+            src: templates/autologin.conf.j2
+            mode: 0444
+
+    - name: Enable lightdm service.
+      systemd:
+        name: lightdm
+        enabled: yes
+        daemon_reload: yes

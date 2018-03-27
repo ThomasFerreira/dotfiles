@@ -1,0 +1,12 @@
+#!/bin/sh -
+
+RXVT_SOCKET="${XDG_RUNTIME_DIR}/urxvt/urxvtd-socket"
+export RXVT_SOCKET
+
+mkdir -p "$(dirname "${RXVT_SOCKET}")"
+
+urxvtc "$@" > /dev/null 2>&1
+if [ $? -eq 2 ]; then
+    urxvtd -q -o -f
+    urxvtc "$@"
+fi

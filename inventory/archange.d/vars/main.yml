@@ -1,0 +1,139 @@
+---
+
+system_superuser: root
+
+user:
+  name: thomas
+  group: thomas
+  home: /home/thomas
+  shell: /usr/bin/zsh
+  password:
+    "$6$4WAoTdkNVjQPQ4Sw$5n6YPuJBkAKbkiHvye8N1ESA9dS3Uw61/MF0OpiDy1xWmnnVqGmFGJQ6g8OgH731IZ1Zkw5x54CB0PJyZZNPG/"
+
+  gpg_pubkey: C76D74803929B8966BA6AF5749708614CAD3D709
+  x_session: i3
+
+user_packages:
+  - name: desktop environment
+    arch_packages:
+      - dex
+      - i3-wm
+      - i3status
+      - numlockx
+      - qt5-base
+      - rofi
+      - rxvt-unicode
+      - xorg-server
+      - xorg-xkill
+      - xorg-xmodmap
+      - xorg-xrdb
+    python_packages:
+      - name: i3ipc
+        state: latest
+        user: "{{ user.name }}"
+  - name: emacs
+    arch_packages:
+      - emacs
+  - name: firefox
+    arch_packages:
+      - firefox
+      - firefox-i18n-fr
+  - name: fonts
+    arch_packages:
+      - adobe-source-code-pro-fonts
+      - otf-ipafont
+      - ttf-anonymous-pro
+      - ttf-droid
+      - ttf-freefont
+      - ttf-inconsolata
+      - ttf-liberation
+  - name: tools
+    arch_packages:
+      - openssh
+      - shellcheck
+      - zsh
+    python_packages:
+      - name: ansible
+        state: latest
+        user: "{{ user.name }}"
+
+user_resources:
+  - path: "{{ user.home }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+
+    directories:
+      - path: .cache
+        mode: "0700"
+      - path: .config
+        mode: "0700"
+      - path: .gnupg
+        mode: "0700"
+      - path: .local
+        mode: "0700"
+      - path: .ssh
+        mode: "0700"
+      - path: projects
+        mode: "0700"
+
+    files:
+      - path: .local/ansible_unvaulted
+        src: "{{ playbook_dir }}/resources/vaulted/dotfiles"
+        directory_mode: "0500"
+        mode: "0400"
+      - path: .local/ansible_unvaulted
+        src: "{{ inventory_file }}.d/resources/vaulted/dotfiles"
+        directory_mode: "0500"
+        mode: "0400"
+
+    git_repositories:
+      - path: projects/personal/dotfiles
+        base_url: "https://github.com/ThomasFerreira/dotfiles.git"
+        push_url: "git@github.com:ThomasFerreira/dotfiles.git"
+
+    stow:
+      - directory: ~/.local/ansible_unvaulted/dotfiles
+      - directory: ~/projects/personal/dotfiles/resources/stow
+      - directory: ~/projects/personal/dotfiles/inventory/{{ inventory_file | basename }}.d/resources/stow
+
+
+enabled_roles:
+  crappy_proxy:
+    conf_scripts:
+      - "{{ inventory_file }}.d/resources/vaulted/crappy_proxy/awl.conf.sh"
+  dhcpcd:
+    interfaces:
+      - enp0s3
+    noarp: yes
+  gnupg:
+    public_keys:
+      - user: "{{ user.name }}"
+        fingerprint: "{{ user.gpg_pubkey }}"
+        trustlevel: "{{ GPG_TRUST.ULTIMATE }}"
+  lightdm:
+    autologin:
+      user: "{{ user.name }}"
+      session: "{{ user.x_session }}"
+  localectl:
+    default_locale: fr_FR.UTF-8
+    additional_locales:
+      - en_US.UTF-8
+      - ja_JP.UTF-8
+    keymap: fr
+  sudo:
+    env_keep:
+      - http_proxy
+      - https_proxy
+      - no_proxy
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - NO_PROXY
+    users:
+      - name: "{{ user.name }}"
+        nopasswd: yes
+  user: "{{ user }}"
+  user_packages: "{{ user_packages }}"
+  user_resources: "{{ user_resources }}"
+  virtualbox_guest:
+    vboxsf_users:
+      - "{{ user.name}}"

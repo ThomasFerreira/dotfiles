@@ -1,0 +1,14 @@
+---
+
+proxy_env_map_as_string: >-
+  {
+    {{ 'http_proxy: "{}",'.format(lookup('env', 'http_proxy')) if lookup('env', 'http_proxy') else '' }}
+    {{ 'HTTP_PROXY: "{}",'.format(lookup('env', 'HTTP_PROXY')) if lookup('env', 'HTTP_PROXY') else '' }}
+    {{ 'https_proxy: "{}",'.format(lookup('env', 'https_proxy')) if lookup('env', 'https_proxy') else '' }}
+    {{ 'HTTPS_PROXY: "{}",'.format(lookup('env', 'HTTPS_PROXY')) if lookup('env', 'HTTPS_PROXY') else '' }}
+    {{ 'no_proxy: "{}",'.format(lookup('env', 'no_proxy')) if lookup('env', 'no_proxy') else '' }}
+    {{ 'NO_PROXY: "{}",'.format(lookup('env', 'NO_PROXY')) if lookup('env', 'NO_PROXY') else '' }}
+  }
+
+
+play_environment: "{{ proxy_env_map_as_string | from_yaml }}"

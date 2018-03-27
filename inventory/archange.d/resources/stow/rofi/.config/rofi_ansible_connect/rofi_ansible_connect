@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; -*-
+
+"""
+Rofi modi script that parse ansible inventory files in "inventories" subfolder.
+Please note that hidden (filename starting with a dot) inventory files are silently ignored.
+
+Called with at least one argument, this script initiate a connection using the
+connect_command script.
+"""
+
+import pathlib
+import sys
+
+from os import execl
+
+from ansible.parsing.dataloader import DataLoader
+from ansible.inventory.manager import InventoryManager
+
+INVENTORY_GLOB = 'inventories/*'
+FILTERED_GROUP = ['all', 'ungrouped', 'RUNDECK_MANAGED_HOSTS']
+
+SCRIPT_PATH = pathlib.Path(__file__)
+SCRIPT_DIR = pathlib.Path(SCRIPT_PATH.parent)
+
+
+def _main():
+
+    if len(sys.argv) > 1:
+
+        connect_script = str(SCRIPT_DIR / 'connect_command')
+        host = sys.argv[1].split(maxsplit=1)[0]
+        execl(connect_script, connect_script, host)
+
+    else:
+
+        inventory_sources = [x for x in SCRIPT_DIR.glob(INVENTORY_GLOB)
+                             if x.is_file() and x.name[0] != '.']
+
+        ansible_inventory = InventoryManager(loader=DataLoader(),
+                                             sources=[str(x) for x in inventory_sources])
+
+        for host in sorted({str(host) for host in ansible_inventory.get_hosts()}):
+            ansible_host = ansible_inventory.get_host(host)
+            filtered_host_groups = {str(group) for group in ansible_host.get_groups()
+                                    if str(group) not in FILTERED_GROUP}
+            print("{} ({})".format(host, ", ".join(sorted(filtered_host_groups))))
+
+
+if __name__ == '__main__':
+    _main()

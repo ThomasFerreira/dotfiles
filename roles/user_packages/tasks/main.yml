@@ -1,0 +1,37 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure user packages are installed.
+      pacman:
+        name: "{{ item.1 }}"
+        state: present
+      with_subelements:
+        - "{{ role_vars | d([]) }}"
+        - arch_packages
+        - skip_missing: yes
+      loop_control:
+        label: "[{{ item.0.name }}] {{ item.1 }}"
+
+    - name: Ensure pip is installed.
+      pacman:
+        name: python-pip
+        state: present
+
+- name: Ensure python user packages are installed.
+  pip:
+    name: "{{ item.1.name }}"
+    version: "{{ item.1.version | default(omit) }}"
+    state: "{{ item.1.state | default(omit) }}"
+    executable: /usr/bin/pip
+    extra_args: "{{ '--user' if item.1.user is defined else omit }}"
+  become_user: "{{ item.1.user | d(role_superuser) }}"
+  become: yes
+  with_subelements:
+    - "{{ role_vars | d([]) }}"
+    - python_packages
+    - skip_missing: yes
+  loop_control:
+    label: "[{{ item.0.name }}] {{ item.1.name }} ({{ item.1.user | d('ALL')}})"

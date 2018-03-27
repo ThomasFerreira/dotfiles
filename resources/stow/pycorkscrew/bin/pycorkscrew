@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+
+""" Dirty conversion of corkscrew from Pat Padgett in python. """
+
+import argparse
+import base64
+import re
+import selectors
+import socket
+
+class RemoteConnection:
+
+    BINARY_CHUNK_SIZE = 4096
+    TIMEOUT = 5
+
+    def __init__(self, host: str, port: int):
+        self.host = host
+        self.port = port
+        self.connection = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.close()
+
+    def _build_proxy_request(self, proxy_auth: str) -> str:
+        request_line = "CONNECT {}:{} HTTP/1.1".format(self.host, self.port)
+        host_header = "\r\nHost: {}:{}".format(self.host, self.port)
+        auth_header = ""
+
+        if proxy_auth:
+            auth = base64.b64encode(proxy_auth.strip())
+            auth_header = "\r\nProxy-Authorization: Basic {}".format(auth.decode("us-ascii"))
+
+        final_request = "{}{}{}\r\n\r\n".format(request_line, host_header, auth_header)
+        return final_request.encode("us-ascii")
+
+    def _connect(self, host: str, port: int):
+        self.close()
+        self.connection = socket.create_connection((host, port), RemoteConnection.TIMEOUT)
+
+    def close(self):
+        if self.connection:
+            self.connection.close()
+
+    def direct_connect(self):
+        self._connect(self.host, self.port)
+
+    def http_proxy_connect(self, proxy_host: str, proxy_port: int, proxy_auth: str) -> bytes:
+        self._connect(proxy_host, proxy_port)
+
+        self.write(self._build_proxy_request(proxy_auth))
+        response = self.read(RemoteConnection.BINARY_CHUNK_SIZE)
+        match = re.match(r"HTTP\/[\d.]+[ ]+2\d\d[ ]+[^\r\n]*(?:\r\n[^\r\n]*)*\r\n\r\n",
+                         response.decode("us-ascii"), re.A | re.M)
+
+        return response[match.end():] if match else None
+
+    def fileno(self):
+        return self.connection.fileno() if self.connection else None
+
+    def read(self, limit: int) -> bytes:
+        return self.connection.recv(limit)
+
+    def write(self, data: bytes) -> int:
+        self.connection.sendall(data)
+        return len(data)
+
+
+def _main():
+    arg_parser = argparse.ArgumentParser()
+
+    arg_parser.add_argument("proxy_host")
+    arg_parser.add_argument("proxy_port", type=int)
+    arg_parser.add_argument("destination_host")
+    arg_parser.add_argument("destination_port", type=int)
+    arg_parser.add_argument("authentication_file", type=argparse.FileType("r"), nargs="?")
+    arg_parser.add_argument("--direct-fallback", dest="direct_fallback", action="store_true",
+                            help=""" When proxy connection fails,
+                            try to fallback to direct connection. """)
+
+    args = arg_parser.parse_args()
+    proxy_auth = args.authentication_file.read() if args.authentication_file else None
+
+    connected = False
+    exit_code = 0
+
+    with open("/dev/stdin", "rb", 0) as stdin, open("/dev/stdout", "wb", 0) as stdout, \
+         RemoteConnection(args.destination_host, args.destination_port) as remote:
+
+        try:
+
+            try:
+                remaining_bytes = remote.http_proxy_connect(args.proxy_host,
+                                                            args.proxy_port,
+                                                            proxy_auth)
+                connected = stdout.write(remaining_bytes) == len(remaining_bytes)
+            except IOError:
+                if not args.direct_fallback:
+                    exit_code = 42
+
+            if not connected and args.direct_fallback:
+                try:
+                    remote.direct_connect()
+                    connected = True
+                except IOError:
+                    exit_code = exit_code + 42
+
+            if connected:
+                select = selectors.DefaultSelector()
+                select.register(stdin, selectors.EVENT_READ, remote)
+                select.register(remote, selectors.EVENT_READ, stdout)
+
+            while connected:
+                for key, _ in select.select():
+                    data = key.fileobj.read(RemoteConnection.BINARY_CHUNK_SIZE)
+                    if connected and data:
+                        connected = key.data.write(data) == len(data)
+                    else:
+                        connected = False
+
+        except KeyboardInterrupt:
+            pass
+
+    exit(exit_code)
+
+if __name__ == "__main__":
+    _main()

@@ -1,0 +1,86 @@
+# i3 config file (v4)
+set $mod Mod4
+
+floating_modifier $mod
+
+font pango:Inconsolata 10
+
+bindsym $mod+F1 exec emacs
+bindsym $mod+F2 exec urxvt
+
+bindsym $mod+Return exec rofi -show combi
+
+bindsym $mod+Shift+A kill
+
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+m focus right
+
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+M move right
+
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+z layout tabbed
+bindsym $mod+e layout toggle split
+
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+bindsym $mod+q focus parent
+#bindsym $mod+d focus child
+
+bindsym $mod+ampersand workspace 1
+bindsym $mod+eacute workspace 2
+bindsym $mod+quotedbl workspace 3
+bindsym $mod+apostrophe workspace 4
+bindsym $mod+parenleft workspace 5
+bindsym $mod+minus workspace 6
+bindsym $mod+egrave workspace 7
+bindsym $mod+underscore workspace 8
+bindsym $mod+ccedilla workspace 9
+bindsym $mod+agrave workspace 10
+
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+eacute move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+egrave move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+ccedilla move container to workspace 9
+bindsym $mod+Shift+agrave move container to workspace 10
+
+bindsym $mod+Shift+c exec sh -c '. ~/.config/x_profile/i3_config && i3-msg reload'
+bindsym $mod+Shift+r exec sh -c '. ~/.config/x_profile/i3_config && i3-msg restart'
+
+mode "resize" {
+  bindsym j resize shrink width 10 px or 10 ppt
+  bindsym k resize grow height 10 px or 10 ppt
+  bindsym l resize shrink height 10 px or 10 ppt
+  bindsym m resize grow width 10 px or 10 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+bar {
+  status_command i3status --config ~/.config/i3/i3status.conf
+}
+
+workspace_layout tabbed
+
+for_window [class="^(pinentry|Pinentry)"] floating enable
+for_window [class=".*"] title_format "<b> %title </b>"
+
+exec_always --no-startup-id dex -a
+exec_always --no-startup-id numlockx on

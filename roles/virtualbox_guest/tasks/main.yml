@@ -1,0 +1,48 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Gather Facts
+      setup:
+        gather_timeout: 15
+
+    - when: ( ansible_virtualization_type == 'virtualbox' ) and ( ansible_virtualization_role == 'guest' )
+      block:
+
+        - name: Ensure virtualbox guest additions are installed.
+          pacman:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - linux
+            - linux-headers
+            - virtualbox-guest-dkms
+            - virtualbox-guest-utils
+
+        - name: Copy custom keyboard hwdb file.
+          copy:
+            src: files/vbox_keyboard/10-vbox-custom-keyboard.hwdb
+            dest: /etc/udev/hwdb.d/
+            mode: 0644
+          register: _vbox_custom_hwdb
+
+        - name: Rebuild hwdb.bin using systemd.
+          command: systemd-hwdb update
+          when: _vbox_custom_hwdb.changed
+
+        - name: Append group vboxsf to given users.
+          user:
+            name: "{{ item }}"
+            groups:
+              - vboxsf
+            append: yes
+          when: role_vars.vboxsf_users is defined
+          with_items: "{{ role_vars.vboxsf_users }}"
+
+        - name: Enable virtualbox guest service.
+          systemd:
+            name: vboxservice
+            enabled: yes
+            daemon_reload: yes

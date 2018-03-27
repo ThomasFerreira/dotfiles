@@ -1,0 +1,11 @@
+#!/usr/bin/bash -
+
+for K in /sys/bus/pci/drivers/?hci-pci; do
+  cd "${K}" || exit 42
+  echo "Resetting devices from ${K}:"
+  for I in ????:??:??.? ; do
+    sudo sh -c "echo -n \"${I}\" > unbind"
+    sudo sh -c "echo -n \"${I}\" > bind"
+    echo "  - ${I}"
+  done
+done

@@ -1,0 +1,55 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure gnupg is installed.
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - gnupg
+        - pcsclite
+        - ccid
+
+    - name: Enable pcscd service.
+      systemd:
+        name: pcscd
+        enabled: yes
+        daemon_reload: yes
+
+
+- name: Ensure needed public keys are present.
+  shell: |-
+    gpg -k --fingerprint '{{ item.fingerprint }}' >/dev/null 2>&1
+    if [ $? -ne 0  ]; then
+        gpg --recv-keys '{{ item.fingerprint }}' >/dev/null 2>&1
+        [ $? -eq 0 ] && echo 'CHANGED'
+    fi
+    gpg -k --fingerprint '{{ item.fingerprint }}' >/dev/null 2>&1
+    exit $?
+  with_items: "{{ role_vars.public_keys }}"
+  register: _gpg_public_key
+  changed_when: _gpg_public_key.stdout == 'CHANGED'
+  loop_control:
+    label: "[{{ item.user }}] {{ item.fingerprint }}"
+  become_user: "{{ item.user }}"
+  become: yes
+
+- name: Set trustlevel of public keys.
+  shell: gpg --import-ownertrust
+  args:
+    stdin: |-
+      ##
+      {% for key in role_vars.public_keys | selectattr('user', '==', item) %}
+      {{ key.fingerprint }}:{{ key.trustlevel }}:
+      {% endfor %}
+      ##
+  with_items: "{{ role_vars.public_keys | map(attribute='user') | unique }}"
+  register: _import_trust_result
+  changed_when: _import_trust_result.stdout != ''
+  loop_control:
+    label: "[{{ item }}]"
+  become_user: "{{ item }}"
+  become: yes

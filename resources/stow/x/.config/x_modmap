@@ -1,0 +1,5 @@
+keycode 135 = Multi_key
+clear mod3
+clear mod4
+add mod3 = Hyper_L Hyper_R
+add mod4 = Super_L Super_R

@@ -1,0 +1,10 @@
+! -*- mode: conf-xdefaults; -*- !
+
+#define BASE_FONT_NAME Inconsolata
+#define BASE_FONT_SIZE 12
+
+#define BASE_FIXED_FONT xft:BASE_FONT_NAME:size=BASE_FONT_SIZE:antialias=true:hinting=true
+#define BASE_MEDIUM_FIXED_FONT BASE_FIXED_FONT:weight=medium
+#define BASE_BOLD_FIXED_FONT BASE_FIXED_FONT:weight=bold
+#define BASE_MEDIUM_ITALIC_FIXED_FONT BASE_MEDIUM_FIXED_FONT:slant=italic
+#define BASE_BOLD_ITALIC_FIXED_FONT BASE_BOLD_FIXED_FONT:slant=italic

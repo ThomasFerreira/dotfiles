@@ -1,0 +1,24 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Create user group.
+      group:
+        name: "{{ role_vars.group | d(role_vars.name) }}"
+        state: present
+
+    - name: Create my main user.
+      user:
+        name: "{{ role_vars.name }}"
+        comment: Me, Myself and I...
+        group: "{{ role_vars.group | d(role_vars.name) }}"
+        groups: "{{ role_vars.additional_groups | d(omit) }}"
+        append: yes
+        home: "{{ role_vars.home | d(omit) }}"
+        createhome: yes
+        shell: "{{ role_vars.shell | d(omit) }}"
+        password: "{{ role_vars.password | d(omit) }}"
+        update_password: on_create
+        state: present

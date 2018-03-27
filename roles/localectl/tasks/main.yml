@@ -1,0 +1,39 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure all needed locale are generated.
+      locale_gen:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ ([role_vars.default_locale] + (role_vars.additional_locales | d([]))) | unique }}"
+
+    - name: Ensure default locale is configured.
+      shell: |-
+        /usr/sbin/localectl status | grep -q 'System Locale: LANG={{ role_vars.default_locale | regex_escape }}$'
+
+        if [ $? -ne 0 ]; then
+          /usr/sbin/localectl set-locale LANG={{ role_vars.default_locale }} >/dev/null 2>&1
+          [ $? -eq 0 ]  && echo 'CHANGED'
+        fi
+
+        /usr/sbin/localectl status | grep -q 'System Locale: LANG={{ role_vars.default_locale | regex_escape }}$'
+        exit $?
+      register: _current_locale
+      changed_when: _current_locale.stdout == 'CHANGED'
+
+    - name: Ensure proper keymap is configured.
+      shell: |-
+        /usr/sbin/localectl status | grep -q 'Keymap: {{ role_vars.keymap | regex_escape }}$'
+
+        if [ $? -ne 0 ]; then
+          /usr/sbin/localectl set-keymap {{ role_vars.keymap }} >/dev/null 2>&1
+          [ $? -eq 0 ]  && echo 'CHANGED'
+        fi
+
+        /usr/sbin/localectl status | grep -q 'System Locale: LANG={{ role_vars.default_locale | regex_escape }}$'
+        exit $?
+      register: _current_keymap
+      changed_when: _current_keymap.stdout == 'CHANGED'

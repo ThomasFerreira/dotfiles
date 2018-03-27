@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; -*-
+
+"""
+Simple Script that check if we already have a window open for that host.
+If true ask i3 to focus that window, open a new window otherwise.
+"""
+
+from os import execlp
+import sys
+
+import i3ipc
+
+
+def _usage():
+    print("Usage: connect_command TARGET_HOST")
+
+def _main():
+
+    if sys.argv[1]:
+
+        switched_to_window = False
+        i3_connection = i3ipc.Connection()
+
+        matching_windows = [c for c in i3_connection.get_tree()
+                            if c.name and c.name == 'Tmux: {}'.format(sys.argv[1])]
+
+        if matching_windows:
+
+            target_window = matching_windows[0]
+
+            if target_window.window_class and target_window.window_class == 'URxvt':
+                i3_connection.command('[id="{}"] focus'.format(target_window.window))
+                switched_to_window = True
+
+        if not switched_to_window:
+            execlp('urxvt', 'urxvt', '-e', 'ssh', sys.argv[1], '-t',
+                   'tmux attach -t main || tmux -f .config/tmux/tmux.conf new -s main')
+
+    else:
+        _usage()
+
+if __name__ == '__main__':
+    _main()

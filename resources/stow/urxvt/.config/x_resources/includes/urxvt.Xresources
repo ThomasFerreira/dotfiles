@@ -1,0 +1,60 @@
+! -*- mode: conf-xdefaults; -*- !
+
+URxvt.perl-ext:
+URxvt.perl-ext-common:
+
+URxvt.xftAntialias: true
+
+URxvt.font: BASE_MEDIUM_FIXED_FONT
+URxvt.boldFont: BASE_BOLD_FIXED_FONT
+URxvt.italicFont: BASE_MEDIUM_ITALIC_FIXED_FONT
+URxvt.boldItalicFont: BASE_BOLD_ITALIC_FIXED_FONT
+
+URxvt.saveLines: 8192
+
+URxvt.jumpScroll: true
+Urxvt.skipScroll: true
+URxvt.scrollBar: false
+URxvt.secondaryScreen: 1
+URxvt.secondaryScroll: 0
+
+URxvt.cursorBlink: true
+URxvt.cursorUnderline: true
+
+URxvt.urgentOnBell: true
+
+URxvt.print-pipe: cat > $(TMPDIR=${HOME} mktemp urxvt.print.XXXXXX)
+
+URxvt.inheritPixmap: true
+URxvt.transparent: true
+URxvt.shading: 10
+
+URxvt.internalBorder: 4
+
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
+URxvt.fading: 35
+URxvt.fadeColor: BASE_COLOR_GREY_00
+
+URxvt.foreground: BASE_COLOR_GREY_05
+URxvt.background: BASE_COLOR_GREY_00
+
+URxvt.cursorColor: BASE_COLOR_WHITE
+
+URxvt.color0: BASE_COLOR_BLACK
+URxvt.color1: BASE_COLOR_RED_03
+URxvt.color2: BASE_COLOR_GREEN_03
+URxvt.color3: BASE_COLOR_YELLOW_03
+URxvt.color4: BASE_COLOR_BLUE_03
+URxvt.color5: BASE_COLOR_VIOLET_03
+URxvt.color6: BASE_COLOR_CYAN_03
+URxvt.color7: BASE_COLOR_GREY_06
+URxvt.color8: BASE_COLOR_GREY_02
+URxvt.color9: BASE_COLOR_RED_05
+URxvt.color10: BASE_COLOR_GREEN_05
+URxvt.color11: BASE_COLOR_YELLOW_05
+URxvt.color12: BASE_COLOR_BLUE_05
+URxvt.color13: BASE_COLOR_VIOLET_05
+URxvt.color14: BASE_COLOR_CYAN_05
+URxvt.color15: BASE_COLOR_WHITE

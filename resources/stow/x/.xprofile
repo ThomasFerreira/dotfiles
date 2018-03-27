@@ -1,0 +1,21 @@
+# -*- mode: shell-script; -*- #
+
+PATH=${HOME}/bin:${PATH}
+export PATH
+
+[ -d ${HOME}/.config/x_resources ] \
+    && ( cd ${HOME}/.config/x_resources \
+        && find {defines,includes} -maxdepth 1 -name '*.Xresources' \
+	   -exec cat {} + 2>/dev/null | xrdb -merge - )
+
+[ -f ${HOME}/.config/x_modmap ] && xmodmap ${HOME}/.config/x_modmap
+
+
+if [ -d "${HOME}/.config/x_profile" ]; then
+
+  for _src_ in ${HOME}/.config/x_profile/*; do
+    [ -r "${_src_}" ] && . "${_src_}"
+  done
+
+  unset src
+fi

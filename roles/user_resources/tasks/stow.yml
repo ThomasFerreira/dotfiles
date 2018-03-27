@@ -1,0 +1,27 @@
+---
+
+- become_user: "{{ role_superuser }}"
+  become: true
+  block:
+
+    - name: Ensure stow is installed.
+      pacman:
+        name: stow
+        state: present
+
+- name: Run stow (Waiting for custom modules ;)).
+  shell: >-
+    stow --no-folding
+    -t {{ item.1.target | d(item.0.path) }}
+    -d {{ item.1.directory }}
+    -S {{ item.1.package | d('*') }}
+  args:
+    chdir: "{{ item.1.directory }}"
+  become_user: "{{ item.1.owner | d(item.0.owner) }}"
+  become: true
+  with_subelements:
+    - "{{ role_vars }}"
+    - "stow"
+    - skip_missing: yes
+  loop_control:
+    label: "{{ item.1.directory }}/{{ item.1.package | d('*') }}"
