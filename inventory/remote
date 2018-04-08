@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; -*-
 
+"""
+Dummy script that allow me to use and 'merge' external inventories
+"""
+
 import argparse
 import json
 import pathlib
@@ -9,9 +13,10 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.inventory.manager import InventoryManager
 
 
-empty_inventory = {"_meta": { "hostvars": {} }}
+EMPTY_INVENTORY = {"_meta": {"hostvars": {}}}
 
-inventory_glob = 'remote.d/inventory_sources/*'
+INVENTORY_GLOB = 'remote.d/inventory_sources/*'
+IGNORED_INVENTORY_FILES = {'.gitignore'}
 
 def _parse_args():
     parser = argparse.ArgumentParser()
@@ -19,23 +24,27 @@ def _parse_args():
     parser.add_argument('--host', dest='host', action='store')
     return parser.parse_args()
 
-if __name__ == '__main__':
+def _main():
     arguments = _parse_args()
 
     final_inventory = {}
 
-    if (arguments.full):
+    if arguments.full:
         script_path = pathlib.Path(__file__)
         script_dir = pathlib.Path(script_path.parent)
 
-        inventory_sources = [x for x in script_dir.glob(inventory_glob) if x.is_file()]
+        inventory_sources = [x for x in script_dir.glob(INVENTORY_GLOB)
+                             if x.is_file() and x.name not in IGNORED_INVENTORY_FILES]
 
         ansible_inventory = InventoryManager(loader=DataLoader(),
                                              sources=[str(x) for x in inventory_sources])
 
-        final_inventory = {**ansible_inventory.get_groups_dict(), **empty_inventory}
+        final_inventory = {**ansible_inventory.get_groups_dict(), **EMPTY_INVENTORY}
 
-    elif (arguments.host):
+    elif arguments.host:
         final_inventory = {}
 
     print(json.dumps(final_inventory))
+
+if __name__ == '__main__':
+    _main()
