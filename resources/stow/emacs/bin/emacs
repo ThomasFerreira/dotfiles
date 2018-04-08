@@ -4,7 +4,7 @@ ALTERNATE_EDITOR="${ALTERNATE_EDITOR:-/bin/nano}"
 if [ -z "${DISPLAY}" ]; then
     /bin/emacsclient -a "${ALTERNATE_EDITOR}" "$@"
 else
-    if /bin/emacsclient -n -e "(frames-on-display-list \"${DISPLAY}\")" >/dev/null 2>&1; then
+    if [ "t" = "$(/bin/emacsclient -n -e "(display-graphic-p)" 2>/dev/null)" ]; then
 	if [ -z "$*" ]; then
 	    /bin/emacsclient -n -e "(select-frame-set-input-focus (selected-frame))" >/dev/null 2>&1
 	else
