@@ -4,7 +4,7 @@
 ### We really need to have python (v >= 3.6) and git installed.
 
 REPOSITORY_LOCATION="https://github.com/ThomasFerreira/dotfiles.git"
-PIP_ANSIBLE_REQUIREMENT="ansible==2.4.*"
+PIP_ANSIBLE_REQUIREMENT="ansible==2.5.*"
 
 CURRENT_HOST="$(hostname | sed -e 's/\(.*\)/\L\1/')"
 
