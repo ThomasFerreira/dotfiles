@@ -1,19 +1,26 @@
-#!/usr/bin/sh
+#!/usr/bin/sh -
 
-BASEDIR=$(dirname "$0")
-CONFDIR="${BASEDIR}/../conf"
+BASEDIR="$(dirname "$0")"
+BASECONFDIR="$(dirname "${BASEDIR}")/conf"
 
 TARGETCONF="${1:-/run/crappy_proxy/tinyproxy.conf}"
+TARGETCONFDIR="$(dirname "${TARGETCONF}")"
 
-mkdir -p "$(dirname "${TARGETCONF}")"
-chown tinyproxy:tinyproxy "$(dirname "${TARGETCONF}")"
+die() { echo "Error: $1" >&2; exit 42; }
 
-echo "" > "${TARGETCONF}"
-
-cat "${CONFDIR}/base.conf" > "${TARGETCONF}"
+mkdir -p "${TARGETCONFDIR}" \
+    || die "Cannot create ${TARGETCONFDIR}."
+chown tinyproxy:tinyproxy "${TARGETCONFDIR}" \
+    || die "Cannot change owner of ${TARGETCONFDIR}."
+cat "${BASECONFDIR}/base.conf" > "${TARGETCONF}" \
+    || die "Cannot append configuration fragment to ${TARGETCONF}"
 
 for _NET_CONF in ${BASEDIR}/genconf.sh.d/*.conf.sh; do
-    if [ -x "${_NET_CONF}" ]; then
-	${_NET_CONF} >> "${TARGETCONF}"
+    if [ -r "${_NET_CONF}" ]; then
+	# shellcheck disable=SC2024 #
+	CONF_TO_APPEND="$(sudo -u tinyproxy sh - < "${_NET_CONF}")" \
+	    && echo "${CONF_TO_APPEND}" >> "${TARGETCONF}"
     fi
 done
+
+exit 0
