@@ -8,6 +8,8 @@ PIP_ANSIBLE_REQUIREMENT="ansible==2.4.*"
 
 CURRENT_HOST="$(hostname | sed -e 's/\(.*\)/\L\1/')"
 
+TARGET_BRANCH="${TARGET_BRANCH:-master}"
+
 ###
 
 command -v python3 >/dev/null 2>&1 \
@@ -30,7 +32,8 @@ python3 -m venv python_venv
 pip install --upgrade "pip"
 pip install "${PIP_ANSIBLE_REQUIREMENT}"
 
-git clone "${REPOSITORY_LOCATION}" "${TEMP_DIRECTORY_PATH}/repository"
+git clone -b "${TARGET_BRANCH}" "${REPOSITORY_LOCATION}" \
+    "${TEMP_DIRECTORY_PATH}/repository"
 
 if [ -r "${TEMP_DIRECTORY_PATH}/repository/bootstrap.cfg" ]; then
     ANSIBLE_CONFIG="${TEMP_DIRECTORY_PATH}/repository/bootstrap.cfg"
