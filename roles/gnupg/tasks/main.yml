@@ -13,9 +13,9 @@
         - pcsclite
         - ccid
 
-    - name: Enable pcscd service.
+    - name: Enable pcscd socket.
       systemd:
-        name: pcscd
+        name: pcscd.socket
         enabled: yes
         daemon_reload: yes
 
