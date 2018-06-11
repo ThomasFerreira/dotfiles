@@ -77,11 +77,11 @@ user_resources:
         mode: "0700"
 
     files:
-      - path: .local/ansible_unvaulted
+      - path: .local/unvaulted
         src: "{{ playbook_dir }}/resources/vaulted/dotfiles"
         directory_mode: "0500"
         mode: "0400"
-      - path: .local/ansible_unvaulted
+      - path: .local/unvaulted
         src: "{{ inventory_file }}.d/resources/vaulted/dotfiles"
         directory_mode: "0500"
         mode: "0400"
@@ -92,7 +92,7 @@ user_resources:
         push_url: "git@github.com:ThomasFerreira/dotfiles.git"
 
     stow:
-      - directory: ~/.local/ansible_unvaulted/dotfiles
+      - directory: ~/.local/unvaulted/dotfiles
       - directory: ~/projects/personal/dotfiles/resources/stow
       - directory: ~/projects/personal/dotfiles/inventory/{{ inventory_file | basename }}.d/resources/stow
 
