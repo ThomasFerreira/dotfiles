@@ -109,7 +109,7 @@ enabled_roles:
     public_keys:
       - user: "{{ user.name }}"
         fingerprint: "{{ user.gpg_pubkey }}"
-        trustlevel: "{{ GPG_TRUST.ULTIMATE }}"
+        trustlevel: ultimate
   lightdm:
     autologin:
       user: "{{ user.name }}"

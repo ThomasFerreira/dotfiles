@@ -1,7 +1,6 @@
 ---
 
-- become_user: "{{ role_superuser }}"
-  become: true
+- become: true
   block:
 
     - name: Ensure TinyProxy is installed.

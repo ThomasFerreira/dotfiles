@@ -4,7 +4,21 @@
 
   environment: "{{ play_environment | d({}) }}"
 
-  pre_tasks:
+  vars:
+
+    roles_to_include:
+      - user
+      - user_packages
+      - user_resources
+      - crappy_proxy
+      - dhcpcd
+      - gnupg
+      - lightdm
+      - localectl
+      - sudo
+      - virtualbox_guest
+
+  tasks:
 
     - name: Include custom inventory vars
       include_vars:
@@ -12,63 +26,23 @@
       ignore_errors: yes
       run_once: yes
 
-    - name: Refresh package list and archlinux-keyring.
-      pacman:
-        name: archlinux-keyring
-        state: latest
-        update_cache: yes
-      when: ansible_os_family == 'Archlinux'
-      become_user: "{{ system_superuser }}"
-      become: yes
+    - become_user: "{{ system_superuser | d('root') }}"
+      block:
 
-  roles:
+        - name: Refresh package list and archlinux-keyring.
+          pacman:
+            name: archlinux-keyring
+            state: latest
+            update_cache: yes
+          when: ansible_os_family == 'Archlinux'
+          become: yes
 
-    - role: 'user'
-      role_vars: "{{ enabled_roles['user'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'user' in enabled_roles )
-
-    - role: 'user_packages'
-      role_vars: "{{ enabled_roles['user_packages'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'user_packages' in enabled_roles )
-
-    - role: 'user_resources'
-      role_vars: "{{ enabled_roles['user_resources'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'user_resources' in enabled_roles )
-
-    - role: 'crappy_proxy'
-      role_vars: "{{ enabled_roles['crappy_proxy'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'crappy_proxy' in enabled_roles )
-
-    - role: 'dhcpcd'
-      role_vars: "{{ enabled_roles['dhcpcd'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'dhcpcd' in enabled_roles )
-
-    - role: 'gnupg'
-      role_vars: "{{ enabled_roles['gnupg'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'gnupg' in enabled_roles )
-
-    - role: 'lightdm'
-      role_vars: "{{ enabled_roles['lightdm'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'lightdm' in enabled_roles )
-
-    - role: 'localectl'
-      role_vars: "{{ enabled_roles['localectl'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'localectl' in enabled_roles )
-
-    - role: 'sudo'
-      role_vars: "{{ enabled_roles['sudo'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'sudo' in enabled_roles )
-
-    - role: 'virtualbox_guest'
-      role_vars: "{{ enabled_roles['virtualbox_guest'] }}"
-      role_superuser: "{{ system_superuser }}"
-      when: ( 'virtualbox_guest' in enabled_roles )
+        - name: Include enabled roles
+          include_role:
+            name: "{{ current_role }}"
+          when: current_role in enabled_roles
+          vars:
+            role_vars: "{{ enabled_roles[current_role] }}"
+          loop_control:
+            loop_var: current_role
+          with_items: "{{ roles_to_include }}"

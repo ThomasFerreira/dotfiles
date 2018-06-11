@@ -1,7 +1,6 @@
 ---
 
-- become_user: "{{ role_superuser }}"
-  become: true
+- become: true
   block:
 
     - name: Ensure gnupg is installed.
@@ -43,7 +42,12 @@
     stdin: |-
       ##
       {% for key in role_vars.public_keys | selectattr('user', '==', item) %}
-      {{ key.fingerprint }}:{{ key.trustlevel }}:
+      {{ key.fingerprint }}:
+      {%- if (key.trustlevel is defined) and (key.trustlevel.upper() in GPG_TRUST) %}
+      {{ GPG_TRUST[key.trustlevel.upper()] }}
+      {%- else %}
+      {{ GPG_TRUST['UNDEFINED'] }}
+      {%- endif %}:
       {% endfor %}
       ##
   with_items: "{{ role_vars.public_keys | map(attribute='user') | unique }}"
