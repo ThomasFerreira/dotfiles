@@ -52,7 +52,7 @@
       ##
   with_items: "{{ role_vars.public_keys | map(attribute='user') | unique }}"
   register: _import_trust_result
-  changed_when: _import_trust_result.stdout != ''
+  changed_when: _import_trust_result.stderr != ''
   loop_control:
     label: "[{{ item }}]"
   become_user: "{{ item }}"
