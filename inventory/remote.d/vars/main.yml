@@ -1,6 +1,5 @@
 ---
 
-ansible_user: "{{ vault_username }}"
 system_superuser: "{{ vault_username }}"
 
 user:
