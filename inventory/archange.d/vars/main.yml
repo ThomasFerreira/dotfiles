@@ -49,7 +49,11 @@ user_packages:
       - ttf-liberation
   - name: tools
     arch_packages:
+      - aspell
+      - aspell-en
+      - aspell-fr
       - openssh
+      - ripgrep
       - shellcheck
       - zsh
     python_packages:
