@@ -50,7 +50,7 @@
       {%- endif %}:
       {% endfor %}
       ##
-  with_items: "{{ role_vars.public_keys | map(attribute='user') | unique }}"
+  with_items: "{{ role_vars.public_keys | map(attribute='user') | unique | list }}"
   register: _import_trust_result
   changed_when: _import_trust_result.stderr != ''
   loop_control:
