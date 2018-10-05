@@ -55,10 +55,7 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-bindsym $mod+Shift+x exec sh -c '. ~/.config/x_profile/i3_config && i3-msg reload'
-bindsym $mod+Shift+y exec sh -c '. ~/.config/x_profile/i3_config && i3-msg restart'
-
-mode "resize" {
+mode "Resize" {
   bindsym t resize shrink width 10 px or 10 ppt
   bindsym d resize grow height 10 px or 10 ppt
   bindsym s resize shrink height 10 px or 10 ppt
@@ -68,7 +65,23 @@ mode "resize" {
   bindsym Escape mode "default"
 }
 
-bindsym $mod+BackSpace mode "resize"
+bindsym $mod+agrave mode "Resize"
+
+set $mode_system System: (h) halt, (r) reboot, (i) i3 reload, (y) i3 restart
+mode "$mode_system" {
+    bindsym h exec --no-startup-id systemctl poweroff, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym i exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg reload', mode "default"
+    bindsym y  exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg restart', mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+Pause mode "$mode_system"
+
+
+
 client.background #1C1E23
 
 client.focused #5781FF #393C45 #B3B6C1 #5781FF #393C45
@@ -99,6 +112,8 @@ bar {
 workspace_layout tabbed
 
 for_window [class="^(pinentry|Pinentry)"] floating enable
+for_window [window_role="About"] floating enable
+
 for_window [class=".*"] title_format "<b> %title </b>"
 
 exec_always --no-startup-id xsetroot -solid "#1C1E23"
