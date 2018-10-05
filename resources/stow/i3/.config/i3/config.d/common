@@ -69,15 +69,38 @@ mode "resize" {
 }
 
 bindsym $mod+BackSpace mode "resize"
+client.background #1C1E23
+
+client.focused #5781FF #393C45 #B3B6C1 #5781FF #393C45
+client.focused_inactive #9297A6 #393C45 #B3B6C1 #9297A6 #393C45
+client.unfocused #393C45 #1C1E23 #9297A6 #393C45 #393C45
+client.urgent #FF4757 #1C1E23 #B3B6C1 #FF4757 #393C45
+
+client.placeholder #000000 #1C1E2 #B3B6C1 #000000 #393C45
 
 bar {
   status_command i3status --config ~/.config/i3/i3status.conf
+
+  colors {
+      background #1C1E23
+      statusline #B3B6C1
+      separator #B3B6C1
+
+      focused_workspace #5781FF #393C45 #B3B6C1
+      active_workspace #AF3EFF #393C45 #9297A6
+      inactive_workspace #9297A6 #393C45 #9297A6
+      urgent_workspace #FF4757 #393C45 #9297A6
+      binding_mode #FF4757 #393C45 #FF4757
+  }
 }
+
+
 
 workspace_layout tabbed
 
 for_window [class="^(pinentry|Pinentry)"] floating enable
 for_window [class=".*"] title_format "<b> %title </b>"
 
+exec_always --no-startup-id xsetroot -solid "#1C1E23"
 exec_always --no-startup-id dex -a
 exec_always --no-startup-id numlockx on
