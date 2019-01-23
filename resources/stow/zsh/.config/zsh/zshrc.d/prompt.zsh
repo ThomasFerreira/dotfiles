@@ -14,12 +14,13 @@ zstyle ':vcs_info:*' formats "${_nl_}( %s )-[ %F{green}%b%f - %i ] %u%c"
 zstyle ':vcs_info:*' actionformats "${_nl_}( %s | %a )-[ %F{green}%b%f - %i ]%u%c"
 
 function preexec_prompt() {
-  local _nl_=$'\n'
-
-  [[ ${PROMPT} == \-* ]] && PROMPT="${_nl_}${PROMPT}"
-  [[ $3 == clear ]] || [[ $3 == clear\ * ]] && PROMPT="${PROMPT:1}"
-
+  [[ $3 == clear ]] || [[ $3 == clear\ * ]] && _CLEARED_PROMPT_="YES"
   echo ""
+}
+
+function precmd_prompt() {
+
+  [[ "${_CLEARED_PROMPT_}" == "NO" ]] && echo "" || _CLEARED_PROMPT_="NO"
 }
 
 function precmd_wtitle() {
@@ -36,6 +37,8 @@ function preexec_wtitle() {
 }
 
 add-zsh-hook -Uz precmd vcs_info
+
+add-zsh-hook -Uz precmd precmd_prompt
 add-zsh-hook -Uz preexec preexec_prompt
 
 if [[ "${TERM}" == (rxvt*|screen*|tmux*) ]]; then
