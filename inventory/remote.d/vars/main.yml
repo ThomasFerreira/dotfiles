@@ -10,6 +10,7 @@ enabled_roles:
   user_resources:
     - path: "{{ user.home }}"
       owner: "{{ user.name }}"
+      mode: "0711"
 
       directories:
         - path: .cache
