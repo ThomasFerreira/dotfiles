@@ -35,26 +35,26 @@ URxvt.iso14755: false
 URxvt.iso14755_52: false
 
 URxvt.fading: 35
-URxvt.fadeColor: BASE_COLOR_GREY_12
+URxvt.fadeColor: COLOR_GREY_BG_BA
 
-URxvt.foreground: BASE_COLOR_GREY_60
-URxvt.background: BASE_COLOR_GREY_12
+URxvt.foreground: COLOR_GREY_FG_BA
+URxvt.background: COLOR_GREY_BG_BA
 
-URxvt.cursorColor: BASE_COLOR_WHITE
+URxvt.cursorColor: COLOR_WHITE
 
-URxvt.color0: BASE_COLOR_BLACK
-URxvt.color1: BASE_COLOR_RED_24
-URxvt.color2: BASE_COLOR_GREEN_24
-URxvt.color3: BASE_COLOR_YELLOW_24
-URxvt.color4: BASE_COLOR_BLUE_24
-URxvt.color5: BASE_COLOR_VIOLET_24
-URxvt.color6: BASE_COLOR_CYAN_24
-URxvt.color7: BASE_COLOR_GREY_48
-URxvt.color8: BASE_COLOR_GREY_72
-URxvt.color9: BASE_COLOR_RED_72
-URxvt.color10: BASE_COLOR_GREEN_72
-URxvt.color11: BASE_COLOR_YELLOW_72
-URxvt.color12: BASE_COLOR_BLUE_72
-URxvt.color13: BASE_COLOR_VIOLET_72
-URxvt.color14: BASE_COLOR_CYAN_72
-URxvt.color15: BASE_COLOR_WHITE
+URxvt.color0: COLOR_GREY_BG_BA
+URxvt.color1: COLOR_RED_FG_UN
+URxvt.color2: COLOR_GREEN_FG_UN
+URxvt.color3: COLOR_ORANGE_FG_UN
+URxvt.color4: COLOR_BLUE_FG_UN
+URxvt.color5: COLOR_VIOLET_FG_UN
+URxvt.color6: COLOR_CYAN_FG_UN
+URxvt.color7: COLOR_GREY_FG_EM
+URxvt.color8: COLOR_GREY_FG_UN
+URxvt.color9: COLOR_RED_FG_EM
+URxvt.color10: COLOR_GREEN_FG_EM
+URxvt.color11: COLOR_ORANGE_FG_EM
+URxvt.color12: COLOR_BLUE_FG_EM
+URxvt.color13: COLOR_VIOLET_FG_EM
+URxvt.color14: COLOR_CYAN_FG_EM
+URxvt.color15: COLOR_WHITE

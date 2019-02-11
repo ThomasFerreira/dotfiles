@@ -1,121 +1,227 @@
 # i3 config file (v4)
+
 set $mod Mod4
 
-floating_modifier $mod
+set_from_resource $colorBlack i3wm.colorBlack #000000
+set_from_resource $colorBlueBgBa i3wm.colorBlueBgBa #000080
+set_from_resource $colorBlueBgEm i3wm.colorBlueBgEm #000080
+set_from_resource $colorBlueFgBa i3wm.colorBlueFgBa #0000ff
+set_from_resource $colorBlueFgEm i3wm.colorBlueFgEm #0000ff
+set_from_resource $colorBlueFgUn i3wm.colorBlueFgUn #0000ff
+set_from_resource $colorCyanBgBa i3wm.colorCyanBgBa #008080
+set_from_resource $colorCyanBgEm i3wm.colorCyanBgEm #008080
+set_from_resource $colorCyanFgBa i3wm.colorCyanFgBa #00ffff
+set_from_resource $colorCyanFgEm i3wm.colorCyanFgEm #00ffff
+set_from_resource $colorCyanFgUn i3wm.colorCyanFgUn #00ffff
+set_from_resource $colorGreenBgBa i3wm.colorGreenBgBa #008000
+set_from_resource $colorGreenBgEm i3wm.colorGreenBgEm #008000
+set_from_resource $colorGreenFgBa i3wm.colorGreenFgBa #00ff00
+set_from_resource $colorGreenFgEm i3wm.colorGreenFgEm #00ff00
+set_from_resource $colorGreenFgUn i3wm.colorGreenFgUn #00ff00
+set_from_resource $colorGreyBgBa i3wm.colorGreyBgBa #808080
+set_from_resource $colorGreyBgEm i3wm.colorGreyBgEm #808080
+set_from_resource $colorGreyFgBa i3wm.colorGreyFgBa #C0C0C0
+set_from_resource $colorGreyFgEm i3wm.colorGreyFgEm #C0C0C0
+set_from_resource $colorGreyFgUn i3wm.colorGreyFgUn #C0C0C0
+set_from_resource $colorOrangeBgBa i3wm.colorOrangeBgBa #808000
+set_from_resource $colorOrangeBgEm i3wm.colorOrangeBgEm #808000
+set_from_resource $colorOrangeFgBa i3wm.colorOrangeFgBa #ffff00
+set_from_resource $colorOrangeFgEm i3wm.colorOrangeFgEm #ffff00
+set_from_resource $colorOrangeFgUn i3wm.colorOrangeFgUn #ffff00
+set_from_resource $colorRedBgBa i3wm.colorRedBgBa #800000
+set_from_resource $colorRedBgEm i3wm.colorRedBgEm #800000
+set_from_resource $colorRedFgBa i3wm.colorRedFgBa #ff0000
+set_from_resource $colorRedFgEm i3wm.colorRedFgEm #ff0000
+set_from_resource $colorRedFgUn i3wm.colorRedFgUn #ff0000
+set_from_resource $colorVioletBgBa i3wm.colorVioletBgBa #800080
+set_from_resource $colorVioletBgEm i3wm.colorVioletBgEm #800080
+set_from_resource $colorVioletFgBa i3wm.colorVioletFgBa #ff00ff
+set_from_resource $colorVioletFgEm i3wm.colorVioletFgEm #ff00ff
+set_from_resource $colorVioletFgUn i3wm.colorVioletFgUn #ff00ff
+set_from_resource $colorWhite i3wm.colorWhite #ffffff
+
+
 
 font pango:Inconsolata 10
 
-bindsym $mod+q exec emacs
-bindsym $mod+g exec urxvt
 
-bindsym $mod+h exec rofi -show combi
 
-bindsym $mod+Shift+period kill
+bindsym $mod+Tab exec --no-startup-id rofi -show combi
 
 bindsym $mod+t focus left
 bindsym $mod+s focus down
 bindsym $mod+d focus up
 bindsym $mod+r focus right
+bindsym $mod+v focus parent
+bindsym $mod+l focus child
 
 bindsym $mod+Shift+t move left
 bindsym $mod+Shift+s move down
 bindsym $mod+Shift+d move up
 bindsym $mod+Shift+r move right
 
-bindsym $mod+o split v
-bindsym $mod+comma split h
+set $mode_k_exec Exec: (b)rowser, (e)ditor, (t/T)erminal
+mode "$mode_k_exec" {
+  bindsym b exec firefox; mode "default"
+  bindsym e exec emacs; mode "default"
 
-bindsym $mod+a fullscreen toggle
-bindsym $mod+u layout stacking
-bindsym $mod+i layout tabbed
-bindsym $mod+e layout toggle split
+  bindsym t exec emacs -e '(progn (select-frame-set-input-focus (selected-frame)) (ansi-term "/bin/zsh"))'; mode "default"
+  bindsym Shift+t exec urxvt; mode "default"
 
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+space focus mode_toggle
+  bindsym Return mode "$mode_k"
+  bindsym Escape mode "default"
 
-bindsym $mod+quotedbl workspace 1
-bindsym $mod+guillemotleft workspace 2
-bindsym $mod+guillemotright workspace 3
-bindsym $mod+parenleft workspace 4
-bindsym $mod+parenright workspace 5
-bindsym $mod+at workspace 6
-bindsym $mod+plus workspace 7
-bindsym $mod+minus workspace 8
-bindsym $mod+slash workspace 9
-bindsym $mod+asterisk workspace 10
+  bindsym Control+g mode "default"
+}
 
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+set $mode_k_layout Layout: (s)tacking, Split (h/v), (t)abbed, (T)oggle all
+mode "$mode_k_layout" {
+  bindsym s layout stacking
+  bindsym h layout splith
+  bindsym v layout splitv
+  bindsym t layout tabbed
+  bindsym Shift+t layout toggle all
 
-mode "Resize" {
+  bindsym Return mode "$mode_k"
+  bindsym Escape mode "default"
+
+  bindsym Control+g mode "default"
+}
+
+set $mode_k_powerctl Powerctl: (h)alt, (i)3 restart, (r)eboot
+mode "$mode_k_powerctl" {
+  bindsym h exec --no-startup-id systemctl poweroff
+  bindsym r exec --no-startup-id systemctl reboot
+  bindsym i exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg restart'; mode "default"
+
+  bindsym Return mode "$mode_k"
+  bindsym Escape mode "default"
+
+  bindsym Control+g mode "default"
+}
+
+set $mode_k_resize Resize
+mode "$mode_k_resize" {
   bindsym t resize shrink width 10 px or 10 ppt
   bindsym d resize grow height 10 px or 10 ppt
   bindsym s resize shrink height 10 px or 10 ppt
   bindsym r resize grow width 10 px or 10 ppt
 
+  bindsym Return mode "$mode_k"
+  bindsym Escape mode "default"
+
+  bindsym Control+g mode "default"
+}
+
+set $mode_k_workspace Workspace management
+mode "$mode_k_workspace" {
+  bindsym e workspace 1
+  bindsym t workspace 2
+  bindsym i workspace 3
+  bindsym s workspace 4
+  bindsym u workspace 5
+  bindsym r workspace 6
+  bindsym a workspace 7
+  bindsym n workspace 8
+
+  bindsym quotdbl workspace 1
+  bindsym guillemotleft workspace 2
+  bindsym guillemotright workspace 3
+  bindsym parenleft workspace 4
+  bindsym parenright workspace 5
+  bindsym at workspace 6
+  bindsym plus workspace 7
+  bindsym minus workspace 8
+
+  bindsym Shift+e move container to workspace 1
+  bindsym Shift+t move container to workspace 2
+  bindsym Shift+i move container to workspace 3
+  bindsym Shift+s move container to workspace 4
+  bindsym Shift+u move container to workspace 5
+  bindsym Shift+r move container to workspace 6
+  bindsym Shift+a move container to workspace 7
+  bindsym Shift+n move container to workspace 8
+
+  bindsym Shift+1 move container to workspace 1
+  bindsym Shift+2 move container to workspace 2
+  bindsym Shift+3 move container to workspace 3
+  bindsym Shift+4 move container to workspace 4
+  bindsym Shift+5 move container to workspace 5
+  bindsym Shift+6 move container to workspace 6
+  bindsym Shift+7 move container to workspace 7
+  bindsym Shift+8 move container to workspace 8
+
+  bindsym Return mode "$mode_k"
+  bindsym Escape mode "default"
+
+  bindsym Control+g mode "default"
+}
+
+set $mode_k I3: (e)xec, (f)loating, F(o)cus mode toggle, (F)ullscreen, (k)ill, (l)ayout, (p)owerctl, (r)eload, (R)esize, Split (h/v), (w)orkspace
+mode "$mode_k" {
+  bindsym e mode "$mode_k_exec"
+  bindsym f floating toggle; mode "default"
+  bindsym h split h; mode "default"
+  bindsym k kill; mode "default"
+  bindsym l mode "$mode_k_layout"
+  bindsym o focus mode_toggle; mode "default"
+  bindsym p mode "$mode_k_powerctl"
+  bindsym r exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg reload'; mode "default"
+  bindsym v split v; mode "default"
+  bindsym w mode "$mode_k_workspace"
+
+  bindsym Shift+f fullscreen toggle; mode "default"
+  bindsym Shift+r mode "$mode_k_resize"
+
   bindsym Return mode "default"
   bindsym Escape mode "default"
+
+  bindsym Control+g mode "default"
 }
-
-bindsym $mod+agrave mode "Resize"
-
-set $mode_system System: (h) halt, (r) reboot, (i) i3 reload, (y) i3 restart
-mode "$mode_system" {
-    bindsym h exec --no-startup-id systemctl poweroff, mode "default"
-    bindsym r exec --no-startup-id systemctl reboot, mode "default"
-    bindsym i exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg reload', mode "default"
-    bindsym y  exec --no-startup-id sh -c '. ~/.config/x_profile/i3_config && i3-msg restart', mode "default"
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-
-bindsym $mod+Pause mode "$mode_system"
+bindsym $mod+space mode "$mode_k"
 
 
 
-client.background #1C1E23
+client.focused $colorGreyBgEm $colorGreyBgEm $colorBlueFgEm $colorGreyBgEm $colorGreyBgEm
+client.focused_inactive $colorGreyBgEm $colorGreyBgEm $colorVioletFgEm $colorGreyBgEm $colorGreyBgEm
+client.unfocused $colorGreyBgEm $colorGreyBgBa $colorGreyFgUn $colorGreyBgEm $colorGreyBgEm
+client.urgent $colorGreyBgEm $colorGreyBgEm $colorRedFgEm $colorGreyBgEm $colorGreyBgEm
+client.placeholder #000000 $colorGreyBgBa $colorGreyBgEm #000000 #000000
 
-client.focused #5781FF #393C45 #B3B6C1 #5781FF #393C45
-client.focused_inactive #9297A6 #393C45 #B3B6C1 #9297A6 #393C45
-client.unfocused #393C45 #1C1E23 #9297A6 #393C45 #393C45
-client.urgent #FF4757 #1C1E23 #B3B6C1 #FF4757 #393C45
-
-client.placeholder #000000 #1C1E2 #B3B6C1 #000000 #393C45
+client.background $colorGreyBgBa
 
 bar {
   status_command i3status --config ~/.config/i3/i3status.conf
 
   colors {
-      background #1C1E23
-      statusline #B3B6C1
-      separator #B3B6C1
+    background $colorGreyBgBa
+    statusline $colorGreyFgBa
+    separator $colorGreyFgUn
 
-      focused_workspace #5781FF #393C45 #B3B6C1
-      active_workspace #AF3EFF #393C45 #9297A6
-      inactive_workspace #9297A6 #393C45 #9297A6
-      urgent_workspace #FF4757 #393C45 #9297A6
-      binding_mode #FF4757 #393C45 #FF4757
+    focused_workspace $colorBlueFgBa $colorGreyBgBa $colorBlueFgBa
+    active_workspace $colorVioletFgBa $colorGreyBgBa $colorVioletFgBa
+    inactive_workspace $colorGreyFgUn $colorGreyBgBa $colorGreyFgUn
+    urgent_workspace $colorRedFgBa $colorGreyBgBa $colorRedFgBa
+    binding_mode $colorGreyBgBa $colorGreyBgBa $colorVioletFgEm
   }
 }
 
 
 
+default_border normal 1
+floating_modifier $mod
+hide_edge_borders none
+workspace_auto_back_and_forth yes
 workspace_layout tabbed
+
+
 
 for_window [class="^(pinentry|Pinentry)"] floating enable
 for_window [window_role="About"] floating enable
-
 for_window [class=".*"] title_format "<b> %title </b>"
 
-exec_always --no-startup-id xsetroot -solid "#1C1E23"
+
+
+exec_always --no-startup-id xsetroot -solid "$colorGreyBgBa"
 exec_always --no-startup-id dex -a
 exec_always --no-startup-id numlockx on

@@ -2,10 +2,10 @@ rofi.auto-select: false
 rofi.bw: 1
 rofi.case-sensitive: false
 rofi.click-to-exit: true
-rofi.color-active: BASE_COLOR_GREY_12, BASE_COLOR_GREEN_72, BASE_COLOR_BLACK, BASE_COLOR_GREY_24, BASE_COLOR_GREEN_72
-rofi.color-normal: BASE_COLOR_GREY_12, BASE_COLOR_GREY_72, BASE_COLOR_BLACK, BASE_COLOR_GREY_24, BASE_COLOR_GREY_72
-rofi.color-urgent: BASE_COLOR_GREY_12, BASE_COLOR_RED_72, BASE_COLOR_BLACK, BASE_COLOR_GREY_24, BASE_COLOR_RED_72
-rofi.color-window: BASE_COLOR_GREY_12, BASE_COLOR_VIOLET_72, BASE_COLOR_GREY_12
+rofi.color-active: COLOR_GREY_BG_BA, COLOR_GREEN_FG_UN, COLOR_GREY_BG_BA, COLOR_GREY_BG_EM, COLOR_GREEN_FG_EM
+rofi.color-normal: COLOR_GREY_BG_BA, COLOR_GREY_FG_UN, COLOR_GREY_BG_BA, COLOR_GREY_BG_EM, COLOR_GREY_FG_EM
+rofi.color-urgent: COLOR_GREY_BG_BA, COLOR_RED_FG_UN, COLOR_GREY_BG_BA, COLOR_GREY_BG_EM , COLOR_RED_FG_EM
+rofi.color-window: COLOR_GREY_BG_BA, COLOR_GREY_BG_EM, COLOR_GREY_BG_BA
 rofi.columns: 1
 rofi.combi-hide-mode-prefix: yes
 rofi.combi-modi: window,drun
@@ -17,13 +17,14 @@ rofi.eh: 1
 rofi.fixed-num-lines: true
 rofi.font: BASE_FONT_NAME BASE_FONT_SIZE
 rofi.fullscreen: false
+rofi.hide-scrollbar: true
 rofi.levenshtein-sort: true
 rofi.lines: 20
 rofi.location: 0
 rofi.matching: glob
 rofi.max-history-size: 5
 rofi.modi: combi
-rofi.padding: 4
+rofi.padding: 64
 rofi.parse-hosts: false
 rofi.parse-known-hosts: true
 rofi.pid: /run/user/1000/rofi.pid
