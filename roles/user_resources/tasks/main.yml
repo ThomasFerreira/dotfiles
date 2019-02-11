@@ -3,6 +3,17 @@
 - become: true
   block:
 
+    - name: Ensure all base path exists.
+      file:
+        path: "{{ item.path }}"
+        owner: "{{ item.owner | d(omit) }}"
+        group: "{{ item.group | d(omit) }}"
+        mode: "{{ item.mode | d(omit) }}"
+        state: directory
+      with_items: "{{ role_vars }}"
+      loop_control:
+        label: "{{ item.path }}"
+
     - name: Ensure all needed directories exists.
       file:
         path: "{{ item.0.path }}/{{ item.1.path }}"
