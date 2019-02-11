@@ -19,6 +19,16 @@ function preexec_prompt() {
 }
 
 function precmd_prompt() {
+  if [[ "${TERM}" == eterm* ]]; then
+    if [[ -n "${SUDO_USER}" ]]; then
+	  _tramp_protocol_="sudo:"
+    elif [[ -n "${SSH_CLIENT}" ]]; then
+	  _tramp_protocol_="ssh:"
+    fi
+    print -P "\033AnSiTu ${_tramp_protocol_}%n"
+    print -P "\033AnSiTh %m"
+    print -P "\033AnSiTc %d"
+  fi
 
   [[ "${_CLEARED_PROMPT_}" == "NO" ]] && echo "" || _CLEARED_PROMPT_="NO"
 }
